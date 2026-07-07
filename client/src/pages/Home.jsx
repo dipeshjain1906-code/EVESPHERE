@@ -7,6 +7,7 @@ const Home = () => {
     const [events, setEvents] = useState([]);
     const [search, setSearch] = useState('');
     const [loading, setLoading] = useState(true);
+    const [error, setError] = useState('');
 
     useEffect(() => {
         const timeoutId = setTimeout(() => {
@@ -17,10 +18,23 @@ const Home = () => {
 
     const fetchEvents = async () => {
         try {
-            const { data } = await api.get(`/events?search=${search}`);
+            setLoading(true);
+            setError('');
+
+            const { data } = await api.get('/events', {
+                params: {
+                    search: search.trim()
+                }
+            });
+
             setEvents(data);
         } catch (error) {
             console.error('Error fetching events:', error);
+            setEvents([]);
+            setError(
+                error.response?.data?.message ||
+                'Unable to load events. Please check whether the backend and database are connected.'
+            );
         } finally {
             setLoading(false);
         }
@@ -86,6 +100,14 @@ const Home = () => {
 
             {loading ? (
                 <div className="text-center py-20 text-xl font-semibold text-gray-600">Loading events...</div>
+            ) : error ? (
+                <div className="text-center py-16 px-6 bg-red-50 border border-red-200 rounded-2xl text-red-700">
+                    <div className="text-xl font-bold mb-3">Unable to load events</div>
+                    <p className="max-w-2xl mx-auto mb-4">{error}</p>
+                    <p className="text-sm text-red-600">
+                        Open <code className="bg-red-100 px-2 py-1 rounded">/api/health</code> and <code className="bg-red-100 px-2 py-1 rounded">/api/health/db</code> on your deployed domain to confirm backend and MongoDB status.
+                    </p>
+                </div>
             ) : events.length === 0 ? (
                 <div className="text-center py-20 text-xl text-gray-500">No events found matching your search.</div>
             ) : (
