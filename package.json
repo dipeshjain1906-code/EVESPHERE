@@ -2,12 +2,13 @@
   "name": "evesphere",
   "version": "1.0.0",
   "private": true,
-  "scripts": {
-    "dev": "concurrently --kill-others-on-fail --names server,client --prefix-colors blue,green \"npm run dev --prefix server\" \"npm run dev --prefix client\"",
-    "server": "npm run dev --prefix server",
-    "client": "npm run dev --prefix client"
-  },
+"scripts": {
+  "dev": "concurrently \"npm run server\" \"npm run client\"",
+  "server": "npm run dev --prefix server",
+  "client": "npm run dev --prefix client",
+  "build": "npm --prefix client install && npm --prefix server install && npm --prefix client run build"
+},
   "devDependencies": {
-    "concurrently": "^9.2.1"
+    "concurrently": "^9.0.0"
   }
 }
