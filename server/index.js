@@ -50,9 +50,43 @@ const connectDB = async () => {
 app.get('/api/health', (req, res) => {
     res.status(200).json({
         success: true,
-        message: 'EVESPHERE backend is running'
+        message: 'EVESPHERE backend is running',
+        database: 'not checked',
+        databaseHealthEndpoints: ['/api/health/db', '/api/db']
     });
 });
+
+const databaseHealthCheck = async (req, res) => {
+    try {
+        await connectDB();
+
+        res.status(200).json({
+            success: true,
+            message: 'EVESPHERE backend is connected to MongoDB',
+            database: {
+                connected: true,
+                readyState: mongoose.connection.readyState,
+                name: mongoose.connection.name || null,
+                host: mongoose.connection.host || null
+            }
+        });
+    } catch (error) {
+        console.error('MongoDB health check failed:', error.message);
+
+        res.status(500).json({
+            success: false,
+            message: 'EVESPHERE backend could not connect to MongoDB',
+            database: {
+                connected: false,
+                error: error.message
+            }
+        });
+    }
+};
+
+// Database health check routes
+app.get('/api/health/db', databaseHealthCheck);
+app.get('/api/db', databaseHealthCheck);
 
 // Connect DB before API routes
 app.use(async (req, res, next) => {
@@ -62,9 +96,10 @@ app.use(async (req, res, next) => {
     } catch (error) {
         console.error('MongoDB connection failed:', error.message);
 
-        return res.status(500).json({
+        return res.status(503).json({
             success: false,
-            message: 'Database connection failed'
+            code: 'DATABASE_CONNECTION_FAILED',
+            message: 'Database connection failed. Check /api/health/db or /api/db and verify MONGODB_URI in Vercel.'
         });
     }
 });

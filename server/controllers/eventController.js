@@ -4,11 +4,14 @@ exports.getAllEvents = async (req, res) => {
   try {
 
     const filters = {};
+    if (req.query.search) {
+      filters.title = { $regex: req.query.search, $options: 'i' };
+    }
     if (req.query.category) {
       filters.category = req.query.category;
     }
     if(req.query.ticketPrice) {
-      filters.ticketPrice = req.query.ticketPrice;
+      filters.ticketPrice = Number(req.query.ticketPrice);
     }
 
     const events = await Event.find(filters);
