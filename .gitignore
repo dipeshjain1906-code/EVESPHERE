@@ -1,0 +1,14 @@
+.agents/
+
+node_modules/
+client/node_modules/
+server/node_modules/
+**/node_modules/
+
+.env
+*.env
+server/.env
+client/.env
+
+client/dist/
+dist/
