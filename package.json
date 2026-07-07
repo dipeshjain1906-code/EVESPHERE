@@ -2,12 +2,21 @@
   "name": "evesphere",
   "version": "1.0.0",
   "private": true,
-"scripts": {
-  "dev": "concurrently \"npm run server\" \"npm run client\"",
-  "server": "npm run dev --prefix server",
-  "client": "npm run dev --prefix client",
-  "build": "npm --prefix client install && npm --prefix server install && npm --prefix client run build"
-},
+  "scripts": {
+    "dev": "concurrently \"npm run server\" \"npm run client\"",
+    "server": "npm run dev --prefix server",
+    "client": "npm run dev --prefix client",
+    "build": "npm --prefix client install && npm --prefix server install && npm --prefix client run build"
+  },
+  "dependencies": {
+    "bcryptjs": "^3.0.3",
+    "cors": "^2.8.6",
+    "dotenv": "^17.4.2",
+    "express": "^5.2.1",
+    "jsonwebtoken": "^9.0.3",
+    "mongoose": "^9.7.3",
+    "nodemailer": "^9.0.3"
+  },
   "devDependencies": {
     "concurrently": "^9.0.0"
   }
